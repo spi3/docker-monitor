@@ -1,0 +1,51 @@
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "docker-health-alerts"
+version = "0.1.0"
+description = "Monitor Docker health transitions and route normalized alerts to receiver plugins."
+readme = "README.md"
+requires-python = ">=3.12"
+license = "MIT"
+authors = [
+  { name = "Docker Health Alert Monitor Contributors" },
+]
+dependencies = [
+  "docker>=7.1",
+  "httpx>=0.27",
+  "pydantic>=2.10",
+  "PyYAML>=6.0",
+]
+
+[project.scripts]
+docker-health-alerts = "docker_health_alerts.cli:main"
+
+[dependency-groups]
+dev = [
+  "mypy>=1.14",
+  "pytest>=8.3",
+  "ruff>=0.9",
+  "types-PyYAML>=6.0",
+]
+
+[tool.pytest.ini_options]
+addopts = "-ra"
+testpaths = ["tests"]
+markers = [
+  "e2e: end-to-end tests",
+  "docker: tests that require Docker daemon access",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["B", "E", "F", "I", "SIM", "UP"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unused_configs = true
