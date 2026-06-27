@@ -74,4 +74,74 @@ All criteria in `docs/task_acceptance_criteria.md` apply.
 Completion Evidence
 -------------------
 
-Completion evidence is recorded here when the task moves to `done`.
+Completed after Task 0010.
+
+Implemented artifacts:
+
+- `.github/workflows/ci.yaml` for pull requests and `main` branch pushes.
+- `.github/workflows/publish-image.yaml` for GHCR publishing from `main` and
+  semver release tags.
+- `docs/release.md` documenting version source of truth, CI gates, publishing,
+  image tags, release steps, and workflow permissions.
+- `tests/test_github_workflows.py` covering required CI commands, workflow
+  permissions, GHCR publishing, immutable SHA tags, semver tags, and
+  default-branch-only `latest`.
+- Updates to `AGENTS.md`, `README.md`, `docs/operations.md`,
+  `docs/testing.md`, and `docs/tech_stack.md`.
+
+Commands run:
+
+```sh
+uv --cache-dir .uv-cache run pytest
+uv --cache-dir .uv-cache run pytest -m e2e
+uv --cache-dir .uv-cache run ruff check .
+uv --cache-dir .uv-cache run ruff format --check .
+uv --cache-dir .uv-cache run mypy .
+uv --cache-dir .uv-cache build
+docker compose -f examples/compose.yaml config
+docker build --target runtime -t docker-monitor:ci .
+docker build --target test -t docker-monitor:test .
+docker run --rm docker-monitor:test
+docker run --rm docker-monitor:ci healthcheck
+```
+
+Results:
+
+- Unit/component test gate passed: 102 tests passed.
+- End-to-end gate passed locally: 2 selected tests passed.
+- Ruff lint passed.
+- Ruff formatting check passed.
+- Mypy strict type check passed.
+- Package build produced source distribution and wheel.
+- Compose config validation passed.
+- Runtime image build passed.
+- Test image build passed.
+- Containerized end-to-end tests passed: 2 selected tests passed.
+- Runtime container healthcheck returned `{"status": "ok"}`.
+- The first sandboxed package build attempt failed due blocked network access for
+  the isolated build backend; rerunning the same `uv build` with approved
+  network access passed.
+
+Document sweep:
+
+- Added `docs/release.md`.
+- Updated `AGENTS.md`, `README.md`, `docs/operations.md`, `docs/testing.md`,
+  and `docs/tech_stack.md`.
+- Checked `docs/security.md`, `docs/requirements.md`,
+  `docs/task_acceptance_criteria.md`, and `docs/implementation_plan.md`; no
+  further changes were required.
+- Updated `docs/task_tracker.md` status.
+
+Maintainability sweep:
+
+- CI commands use the same `uv` gates as local development.
+- Publishing is isolated to a separate workflow with `packages: write`; CI uses
+  read-only repository permissions.
+- Version source of truth is documented as `[project].version` in
+  `pyproject.toml`.
+- Workflow expectations are tested in the normal unit test suite.
+
+Residual risk:
+
+- Workflows have not run on GitHub in this local environment. Local workflow
+  structure, commands, Docker builds, and container commands were validated.

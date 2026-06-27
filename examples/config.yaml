@@ -1,0 +1,22 @@
+host: serenity
+
+monitor:
+  mode: label_opt_in
+  label: docker-monitor.enable
+  send_resolved: true
+  send_starting: false
+  health_log_output_limit: 1000
+
+receivers:
+  - name: raw-webhook
+    plugin: generic-webhook
+    config:
+      url_file: /run/secrets/raw_webhook_url
+      timeout: 10s
+      retries: 3
+
+routes:
+  - match:
+      severity: warning
+    receivers:
+      - raw-webhook

@@ -12,7 +12,7 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_valida
 
 CONFIG_FILE_ENV = "CONFIG_FILE"
 DEFAULT_CONFIG_FILE = "/config/config.yaml"
-DEFAULT_MONITOR_LABEL = "docker-health-alert.enable"
+DEFAULT_MONITOR_LABEL = "docker-monitor.enable"
 KNOWN_PLUGIN_NAMES = frozenset({"discord", "generic-webhook"})
 
 DurationInput = str | int | float

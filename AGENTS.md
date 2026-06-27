@@ -2,14 +2,14 @@
 
 ## Project Structure & Module Organization
 
-This repository currently contains project documentation and implementation task
+This repository contains a Python service, tests, docs, examples, and task
 definitions. Core docs live in `docs/*.md`. Implementation tasks are tracked in
 `docs/task_tracker.md`, with one task definition per file under `docs/tasks/`.
 
-Planned source layout is documented in `docs/tech_stack.md`:
+Main layout:
 
-- `docker_health_alerts/`: Python service package.
-- `docker_health_alerts/receivers/`: optional receiver plugins.
+- `docker_monitor/`: Python service package.
+- `docker_monitor/receivers/`: optional receiver plugins.
 - `tests/`: unit, component, and end-to-end tests.
 
 Keep Docker event logic, routing, and provider-specific receiver code separated
@@ -17,8 +17,7 @@ as described in `docs/architecture.md`.
 
 ## Build, Test, and Development Commands
 
-Tooling is defined by Task 0001 and may not exist yet. Once scaffolded, expected
-commands are:
+Tooling is managed by `uv`. Use these commands:
 
 - `uv sync`: install the project and development toolchain.
 - `uv run pytest`: run the default test suite.
@@ -29,6 +28,10 @@ commands are:
 
 Record exact commands and results in the active task file before marking work
 done.
+
+CI runs the same Python gates through `uv`, plus package build, Compose
+validation, container image builds, containerized e2e tests, and a runtime
+healthcheck.
 
 ## Coding Style & Naming Conventions
 
@@ -61,6 +64,9 @@ Each implementation task must finish with its own commit after acceptance
 criteria pass and completion evidence is recorded. Pull requests should include
 scope, linked task file, test evidence, documentation updates, and residual
 risks.
+
+Release commits update `[project].version` in `pyproject.toml`; semver release
+tags use the matching `vX.Y.Z` format.
 
 ## Security & Configuration Tips
 

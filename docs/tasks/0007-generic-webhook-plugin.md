@@ -65,4 +65,60 @@ All criteria in `docs/task_acceptance_criteria.md` apply.
 Completion Evidence
 -------------------
 
-Completion evidence is recorded here when the task moves to `done`.
+Completed after Task 0006.
+
+Implemented artifacts:
+
+- `docker_monitor/secrets.py` with shared secret-file reading that strips
+  one trailing newline.
+- `docker_monitor/plugins.py` plugin registry and receiver loading.
+- `docker_monitor/receivers/generic_webhook.py` with `httpx` POST
+  delivery, `url`/`url_file`, `WEBHOOK_URL`/`WEBHOOK_URL_FILE`, static headers,
+  `header_files`, default normalized-alert JSON payloads, JSON
+  `payload_template` rendering, and retry classification.
+- `tests/test_plugins.py` covering configured-only plugin import behavior,
+  one-import-per-plugin behavior, and missing plugin startup errors.
+- `tests/test_generic_webhook.py` covering URL-file newline stripping, headers,
+  header files, default payloads, template payloads, 2xx success, network
+  retryable failures, non-2xx retryable failures, and secret-safe result
+  messages.
+
+Commands run:
+
+```sh
+uv --cache-dir .uv-cache run pytest
+uv --cache-dir .uv-cache run pytest -m e2e
+uv --cache-dir .uv-cache run ruff check .
+uv --cache-dir .uv-cache run ruff format --check .
+uv --cache-dir .uv-cache run mypy .
+uv --cache-dir .uv-cache build
+```
+
+Results:
+
+- Unit/component test gate passed: 86 tests passed.
+- End-to-end gate passed: 2 selected tests passed.
+- Ruff lint passed.
+- Ruff formatting check passed.
+- Mypy strict type check passed.
+- Package build produced source distribution and wheel.
+
+Document sweep:
+
+- Updated `docs/configuration.md` and `docs/plugin_contract.md` with the
+  implemented `payload_template` token behavior.
+- Checked `docs/security.md`, `docs/testing.md`, and `docs/requirements.md`;
+  implemented behavior matches the documented requirements.
+- Updated `docs/task_tracker.md` status.
+
+Maintainability sweep:
+
+- Receiver loading is centralized in `docker_monitor/plugins.py`.
+- Secret file reading is shared through `docker_monitor/secrets.py`.
+- The generic webhook plugin does not import or inspect Docker SDK objects.
+- Delivery results and error messages avoid webhook URLs and secret header
+  values.
+
+Residual risk:
+
+- Discord remains intentionally missing until Task 0008.

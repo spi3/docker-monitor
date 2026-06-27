@@ -224,7 +224,7 @@ config:
   timeout: 10s
   retries: 3
   headers:
-    X-Source: docker-health-alert
+    X-Source: docker-monitor
   header_files:
     Authorization: /run/secrets/webhook_authorization
 ```
@@ -233,6 +233,8 @@ Behavior:
 
 - Read `url_file` if configured, otherwise use `url`.
 - Send the normalized alert object as JSON by default.
+- Support `payload_template` with `{field.path}` tokens for JSON payload
+  shaping.
 - Apply static headers and file-loaded headers.
 - Treat network exceptions as `retryable_failure`.
 - Treat non-2xx responses as `retryable_failure` by default.
@@ -262,7 +264,9 @@ Behavior:
 - Include container name, image, host, Compose project/service, health state,
   and truncated health log output when available.
 - Return `success` for Discord 2xx responses.
-- Classify network failures and Discord 5xx responses as retryable.
+- Classify network failures, Discord 429, and Discord 5xx responses as
+  retryable.
+- Classify other Discord 4xx responses as permanent failures.
 - Redact the webhook URL in logs and errors.
 
 Adding A New Plugin

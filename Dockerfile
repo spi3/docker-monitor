@@ -1,4 +1,4 @@
-FROM python:3.12-slim AS runtime
+FROM python:3.12-slim AS base
 
 COPY --from=ghcr.io/astral-sh/uv:0.9.9 /uv /uvx /bin/
 
@@ -10,7 +10,17 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app
 
 COPY pyproject.toml uv.lock README.md ./
-COPY docker_health_alerts ./docker_health_alerts
+COPY docker_monitor ./docker_monitor
+
+FROM base AS test
+
+COPY tests ./tests
+
+RUN uv sync --locked --no-cache
+
+CMD ["uv", "run", "pytest", "-m", "e2e"]
+
+FROM base AS runtime
 
 RUN uv sync --locked --no-dev --no-cache
 
@@ -19,8 +29,8 @@ USER appuser
 
 ENV CONFIG_FILE=/config/config.yaml
 
-ENTRYPOINT ["uv", "run", "--no-dev", "docker-health-alerts"]
-CMD ["run"]
+ENTRYPOINT ["uv", "run", "--no-dev", "docker-monitor"]
+CMD ["run", "--config", "/config/config.yaml"]
 
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 --start-period=10s \
-  CMD ["uv", "run", "--no-dev", "docker-health-alerts", "healthcheck"]
+  CMD ["uv", "run", "--no-dev", "docker-monitor", "healthcheck"]

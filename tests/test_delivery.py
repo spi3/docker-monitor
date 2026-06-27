@@ -5,9 +5,9 @@ from typing import Any
 
 import pytest
 
-from docker_health_alerts.config import ReceiverConfig
-from docker_health_alerts.delivery import DeliveryCoordinator, FatalDeliveryError
-from docker_health_alerts.plugins import DeliveryResult
+from docker_monitor.config import ReceiverConfig
+from docker_monitor.delivery import DeliveryCoordinator, FatalDeliveryError
+from docker_monitor.plugins import DeliveryResult
 
 
 class FakeReceiver:

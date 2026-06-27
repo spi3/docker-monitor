@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import UTC, datetime
 from typing import Any
 
-from docker_health_alerts.docker_source import (
+from docker_monitor.docker_source import (
     DOCKER_EVENT_FILTERS,
     DockerSource,
     container_has_healthcheck,
@@ -23,7 +23,7 @@ def container_attrs(
         "Config": {
             "Image": "lscr.io/linuxserver/qbittorrent:latest",
             "Labels": {
-                "docker-health-alert.enable": "true",
+                "docker-monitor.enable": "true",
                 "com.docker.compose.project": "gt",
             },
             "Healthcheck": healthcheck or {"Test": ["CMD", "curl", "-f", "/"]},
@@ -112,7 +112,7 @@ def test_docker_source_uses_from_env_client(monkeypatch) -> None:  # type: ignor
 
     fake_client = FakeClient()
     monkeypatch.setattr(
-        "docker_health_alerts.docker_source.docker.from_env", lambda: fake_client
+        "docker_monitor.docker_source.docker.from_env", lambda: fake_client
     )
 
     source = DockerSource()

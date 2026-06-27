@@ -4,10 +4,10 @@ from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from typing import Any
 
-from docker_health_alerts.alerts import Alert
-from docker_health_alerts.config import ReceiverConfig
-from docker_health_alerts.plugins import DeliveryResult, DeliveryStatus, Receiver
-from docker_health_alerts.routing import alert_payload
+from docker_monitor.alerts import Alert
+from docker_monitor.config import ReceiverConfig
+from docker_monitor.plugins import DeliveryResult, DeliveryStatus, Receiver
+from docker_monitor.routing import alert_payload
 
 LogEvent = Callable[[dict[str, Any]], None]
 

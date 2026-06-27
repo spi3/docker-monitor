@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from docker_health_alerts.state import HealthStateTracker, record_health_observation
+from docker_monitor.state import HealthStateTracker, record_health_observation
 
 
 def test_unknown_to_unhealthy_emits_firing_and_records_state() -> None:

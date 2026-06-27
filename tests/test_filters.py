@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import pytest
 
-from docker_health_alerts.alerts import ContainerSnapshot
-from docker_health_alerts.config import MonitorConfig, MonitorFilters
-from docker_health_alerts.filters import (
+from docker_monitor.alerts import ContainerSnapshot
+from docker_monitor.config import MonitorConfig, MonitorFilters
+from docker_monitor.filters import (
     image_filter_matches,
     is_label_false,
     is_label_true,
@@ -33,7 +33,7 @@ def test_label_opt_in_monitors_true_label(value: str) -> None:
     monitor = MonitorConfig(mode="label_opt_in")
 
     assert should_monitor_container(
-        container(labels={"docker-health-alert.enable": value}),
+        container(labels={"docker-monitor.enable": value}),
         monitor,
     )
 
@@ -43,7 +43,7 @@ def test_label_opt_in_ignores_missing_or_false_label() -> None:
 
     assert not should_monitor_container(container(), monitor)
     assert not should_monitor_container(
-        container(labels={"docker-health-alert.enable": "false"}),
+        container(labels={"docker-monitor.enable": "false"}),
         monitor,
     )
 
@@ -53,7 +53,7 @@ def test_label_opt_out_monitors_missing_or_true_label() -> None:
 
     assert should_monitor_container(container(), monitor)
     assert should_monitor_container(
-        container(labels={"docker-health-alert.enable": "true"}),
+        container(labels={"docker-monitor.enable": "true"}),
         monitor,
     )
 
@@ -62,7 +62,7 @@ def test_label_opt_out_excludes_false_label() -> None:
     monitor = MonitorConfig(mode="label_opt_out")
 
     assert not should_monitor_container(
-        container(labels={"docker-health-alert.enable": " false "}),
+        container(labels={"docker-monitor.enable": " false "}),
         monitor,
     )
 

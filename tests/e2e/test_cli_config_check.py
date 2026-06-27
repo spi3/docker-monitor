@@ -34,7 +34,7 @@ routes:
         [
             sys.executable,
             "-m",
-            "docker_health_alerts",
+            "docker_monitor",
             "config-check",
             "--config",
             str(config_file),

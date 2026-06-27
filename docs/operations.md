@@ -6,7 +6,7 @@ Status: initial operations guide
 Purpose
 -------
 
-This document describes how to run Docker Health Alert Monitor as a container
+This document describes how to run DockerMonitor as a container
 and what operators should expect at runtime.
 
 Container Runtime
@@ -36,12 +36,12 @@ Docker Run Example
 
 ```sh
 docker run -d \
-  --name docker-health-alerts \
+  --name docker-monitor \
   -v /var/run/docker.sock:/var/run/docker.sock:ro \
   -v ./config:/config:ro \
   -v ./secrets:/run/secrets:ro \
   -e CONFIG_FILE=/config/config.yaml \
-  docker-health-alerts:latest
+  docker-monitor:latest
 ```
 
 Docker Compose Example
@@ -49,9 +49,9 @@ Docker Compose Example
 
 ```yaml
 services:
-  docker-health-alerts:
-    image: docker-health-alerts:latest
-    container_name: docker-health-alerts
+  docker-monitor:
+    image: docker-monitor:latest
+    container_name: docker-monitor
     restart: unless-stopped
     environment:
       CONFIG_FILE: /config/config.yaml
@@ -60,12 +60,15 @@ services:
       - ./config:/config:ro
       - ./secrets:/run/secrets:ro
     healthcheck:
-      test: ["CMD", "docker-health-alerts", "healthcheck"]
+      test: ["CMD", "docker-monitor", "healthcheck"]
       interval: 30s
       timeout: 5s
       retries: 3
       start_period: 10s
 ```
+
+A complete Compose example is available at `examples/compose.yaml`, with a
+matching config file at `examples/config.yaml`.
 
 Example Monitored Service
 -------------------------
@@ -78,7 +81,7 @@ services:
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
     labels:
-      docker-health-alert.enable: "true"
+      docker-monitor.enable: "true"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080"]
       interval: 30s
@@ -101,8 +104,28 @@ set, it should use the default path.
 Validate configuration before running the service:
 
 ```sh
-uv run docker-health-alerts config-check --config /config/config.yaml
+uv run docker-monitor config-check --config /config/config.yaml
 ```
+
+Run the service:
+
+```sh
+uv run docker-monitor run --config /config/config.yaml
+```
+
+The service installs `SIGTERM` and `SIGINT` handlers, reconciles startup state
+before consuming live events, and logs JSON records to stdout.
+
+Container validation commands:
+
+```sh
+docker build --target runtime -t docker-monitor:local .
+docker run --rm docker-monitor:local healthcheck
+docker compose -f examples/compose.yaml config
+```
+
+Published container images are pushed to GitHub Container Registry by the
+publish workflow documented in `docs/release.md`.
 
 Secrets
 -------
@@ -128,7 +151,7 @@ The container should provide a healthcheck command.
 Recommended command shape:
 
 ```sh
-uv run --no-dev docker-health-alerts healthcheck
+uv run --no-dev docker-monitor healthcheck
 ```
 
 The command should return:
@@ -180,6 +203,9 @@ Expected behavior:
 This keeps alerts accurate across Docker daemon restarts and temporary socket
 interruptions.
 
+After reconnecting, startup reconciliation runs again before live event
+consumption resumes.
+
 Shutdown
 --------
 
@@ -188,7 +214,8 @@ The service should handle `SIGTERM` and `SIGINT`.
 Expected shutdown behavior:
 
 - Stop consuming new Docker events.
-- Finish in-flight receiver deliveries within a bounded grace period.
+- Finish the current receiver delivery path within the configured shutdown grace
+  period and plugin HTTP timeouts.
 - Cancel pending retries after the grace period.
 - Flush logs.
 - Exit with status code `0` for normal shutdown.

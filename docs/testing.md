@@ -6,7 +6,7 @@ Status: initial testing strategy
 Purpose
 -------
 
-This document defines the testing approach for Docker Health Alert Monitor. The
+This document defines the testing approach for DockerMonitor. The
 core service should be testable without a live Docker daemon, while still
 allowing optional integration tests against Docker when available.
 
@@ -47,7 +47,7 @@ Configuration Tests
 Configuration tests should verify:
 
 - Default monitor mode is `label_opt_in`.
-- Default monitor label is `docker-health-alert.enable`.
+- Default monitor label is `docker-monitor.enable`.
 - `send_resolved` defaults to `true`.
 - `send_starting` defaults to `false`.
 - Duplicate receiver names are rejected.
@@ -192,6 +192,17 @@ Suggested marker:
 ```sh
 uv run pytest -m docker
 ```
+
+Containerized validation for the end-to-end CLI checks uses the Dockerfile test
+target:
+
+```sh
+docker build --target test -t docker-monitor:test .
+docker run --rm docker-monitor:test
+```
+
+GitHub Actions runs the same local gates plus container build and containerized
+end-to-end validation. See `docs/release.md`.
 
 Secret Redaction Tests
 ----------------------

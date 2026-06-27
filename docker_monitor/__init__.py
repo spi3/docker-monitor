@@ -1,4 +1,4 @@
-"""Docker Health Alert Monitor."""
+"""DockerMonitor."""
 
 __all__ = ["__version__"]
 

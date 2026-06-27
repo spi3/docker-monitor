@@ -70,10 +70,10 @@ Completed after Task 0003.
 
 Implemented artifacts:
 
-- `docker_health_alerts/filters.py` with `label_opt_in`, `label_opt_out`,
+- `docker_monitor/filters.py` with `label_opt_in`, `label_opt_out`,
   optional name, image, Compose project, Compose service, and arbitrary label
   filtering.
-- `docker_health_alerts/state.py` with full-container-ID health state tracking,
+- `docker_monitor/state.py` with full-container-ID health state tracking,
   duplicate suppression, and alert-status observation helpers.
 - `tests/test_filters.py` covering label modes, case-insensitive label booleans,
   normalized names, image references, Compose labels, arbitrary labels, and

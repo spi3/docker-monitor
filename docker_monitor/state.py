@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from docker_health_alerts.alerts import AlertStatus, alert_status_for_health
+from docker_monitor.alerts import AlertStatus, alert_status_for_health
 
 
 @dataclass(frozen=True)

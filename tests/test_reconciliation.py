@@ -3,10 +3,10 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import UTC, datetime
 
-from docker_health_alerts.alerts import ContainerSnapshot, HealthLogSnapshot
-from docker_health_alerts.config import AppConfig, MonitorConfig
-from docker_health_alerts.reconciliation import reconcile_startup, startup_alert_status
-from docker_health_alerts.state import HealthStateTracker
+from docker_monitor.alerts import ContainerSnapshot, HealthLogSnapshot
+from docker_monitor.config import AppConfig, MonitorConfig
+from docker_monitor.reconciliation import reconcile_startup, startup_alert_status
+from docker_monitor.state import HealthStateTracker
 
 
 @dataclass
@@ -32,7 +32,7 @@ def container(
         image="lscr.io/linuxserver/qbittorrent:latest",
         state="running",
         health=health,
-        labels=labels if labels is not None else {"docker-health-alert.enable": "true"},
+        labels=labels if labels is not None else {"docker-monitor.enable": "true"},
         health_log=health_log,
         has_healthcheck=has_healthcheck,
     )
@@ -50,7 +50,7 @@ def test_reconcile_startup_emits_firing_for_existing_unhealthy_container() -> No
                 id="abc123",
                 health="unhealthy",
                 labels={
-                    "docker-health-alert.enable": "true",
+                    "docker-monitor.enable": "true",
                     "com.docker.compose.project": "gt",
                     "com.docker.compose.service": "qbittorrent",
                     "ApiToken": "secret",

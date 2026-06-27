@@ -28,7 +28,7 @@ CONFIG_FILE=/config/config.yaml
 Validate a configuration file with:
 
 ```sh
-uv run docker-health-alerts config-check --config /config/config.yaml
+uv run docker-monitor config-check --config /config/config.yaml
 ```
 
 If `--config` is omitted, the command reads `CONFIG_FILE` and then falls back to
@@ -43,7 +43,7 @@ severity: warning
 
 monitor:
   mode: label_opt_in
-  label: docker-health-alert.enable
+  label: docker-monitor.enable
   send_resolved: true
   send_starting: false
   health_log_output_limit: 1000
@@ -69,7 +69,7 @@ Monitor Configuration
 ```yaml
 monitor:
   mode: label_opt_in
-  label: docker-health-alert.enable
+  label: docker-monitor.enable
   send_resolved: true
   send_starting: false
   health_log_output_limit: 1000
@@ -79,7 +79,7 @@ Fields:
 
 - `mode`: `label_opt_in` or `label_opt_out`. Defaults to `label_opt_in`.
 - `label`: Docker label used by the selected monitor mode. Defaults to
-  `docker-health-alert.enable`.
+  `docker-monitor.enable`.
 - `send_resolved`: Emit `resolved` alerts when unhealthy containers become
   healthy. Defaults to `true`.
 - `send_starting`: Emit `starting` alerts. Defaults to `false`.
@@ -94,7 +94,7 @@ are monitored.
 
 ```yaml
 labels:
-  docker-health-alert.enable: "true"
+  docker-monitor.enable: "true"
 ```
 
 In `label_opt_out` mode, all containers are monitored except containers with the
@@ -102,7 +102,7 @@ configured label set to `false`.
 
 ```yaml
 labels:
-  docker-health-alert.enable: "false"
+  docker-monitor.enable: "false"
 ```
 
 Label boolean comparisons should be case-insensitive and should trim surrounding
@@ -209,7 +209,7 @@ receivers:
       timeout: 10s
       retries: 3
       headers:
-        X-Source: docker-health-alert
+        X-Source: docker-monitor
       header_files:
         Authorization: /run/secrets/webhook_authorization
 ```
@@ -229,6 +229,18 @@ secrets and must not be logged.
 
 The generic webhook plugin sends the normalized alert object as JSON when
 `payload_template` is not configured.
+
+When `payload_template` is configured, strings may reference alert fields with
+brace syntax:
+
+```yaml
+payload_template:
+  text: "{container.name} is {status}"
+  service: "{compose.service}"
+```
+
+Nested objects and lists are supported. Missing fields render as an empty
+string.
 
 Discord Configuration
 ---------------------
@@ -284,7 +296,7 @@ host: serenity
 
 monitor:
   mode: label_opt_in
-  label: docker-health-alert.enable
+  label: docker-monitor.enable
   send_resolved: true
   send_starting: false
 
@@ -309,7 +321,7 @@ host: serenity
 
 monitor:
   mode: label_opt_out
-  label: docker-health-alert.enable
+  label: docker-monitor.enable
   health_log_output_limit: 500
 
 receivers:

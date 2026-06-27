@@ -170,6 +170,11 @@ Recommended mounts:
 ./secrets:/run/secrets:ro
 ```
 
+The example files under `examples/secrets/` contain non-secret example values
+only.
+Production deployments should mount real secrets from a protected secret store
+or host path with restricted permissions.
+
 Least Privilege
 ---------------
 

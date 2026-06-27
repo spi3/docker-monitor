@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from docker_health_alerts.config import (
+from docker_monitor.config import (
     DEFAULT_CONFIG_FILE,
     DEFAULT_MONITOR_LABEL,
     ConfigError,

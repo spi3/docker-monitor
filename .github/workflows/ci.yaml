@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    name: Python, Package, And Container Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: .python-version
+
+      - name: Install dependencies
+        run: uv sync --locked --python 3.12
+
+      - name: Run unit and component tests
+        run: uv run pytest
+
+      - name: Run end-to-end tests
+        run: uv run pytest -m e2e
+
+      - name: Run lint
+        run: uv run ruff check .
+
+      - name: Check formatting
+        run: uv run ruff format --check .
+
+      - name: Run type checks
+        run: uv run mypy .
+
+      - name: Build Python package
+        run: uv build
+
+      - name: Validate Docker Compose example
+        run: docker compose -f examples/compose.yaml config
+
+      - name: Build runtime container image
+        run: docker build --target runtime -t docker-monitor:ci .
+
+      - name: Build test container image
+        run: docker build --target test -t docker-monitor:test .
+
+      - name: Run containerized end-to-end tests
+        run: docker run --rm docker-monitor:test
+
+      - name: Run container healthcheck
+        run: docker run --rm docker-monitor:ci healthcheck

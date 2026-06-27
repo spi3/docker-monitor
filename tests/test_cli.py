@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from docker_health_alerts.cli import main
+from docker_monitor.cli import main
 
 
 def test_healthcheck_prints_ok(capsys: pytest.CaptureFixture[str]) -> None:
@@ -20,5 +20,5 @@ def test_run_command_reports_not_implemented(
     exit_code = main(["run"])
 
     captured = capsys.readouterr()
-    assert exit_code == 2
-    assert json.loads(captured.err)["event"] == "service.not_implemented"
+    assert exit_code == 1
+    assert json.loads(captured.out)["event"] == "service.startup_failed"

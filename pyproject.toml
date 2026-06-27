@@ -3,14 +3,14 @@ requires = ["hatchling>=1.26"]
 build-backend = "hatchling.build"
 
 [project]
-name = "docker-health-alerts"
+name = "docker-monitor"
 version = "0.1.0"
 description = "Monitor Docker health transitions and route normalized alerts to receiver plugins."
 readme = "README.md"
 requires-python = ">=3.12"
 license = "MIT"
 authors = [
-  { name = "Docker Health Alert Monitor Contributors" },
+  { name = "DockerMonitor Contributors" },
 ]
 dependencies = [
   "docker>=7.1",
@@ -20,7 +20,7 @@ dependencies = [
 ]
 
 [project.scripts]
-docker-health-alerts = "docker_health_alerts.cli:main"
+docker-monitor = "docker_monitor.cli:main"
 
 [dependency-groups]
 dev = [

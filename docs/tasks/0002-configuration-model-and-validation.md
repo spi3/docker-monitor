@@ -70,10 +70,10 @@ Completed after Task 0001.
 
 Implemented artifacts:
 
-- `docker_health_alerts/config.py` with YAML loading, defaults, pydantic models,
+- `docker_monitor/config.py` with YAML loading, defaults, pydantic models,
   duration parsing, receiver validation, route validation, known plugin
   validation, and secret file reference validation.
-- `docker_health_alerts/cli.py` `config-check` command.
+- `docker_monitor/cli.py` `config-check` command.
 - `tests/test_config.py` for defaults, invalid monitor modes, duplicate
   receivers, route references, plugin names, duration parsing, environment
   config path loading, and secret file validation.
@@ -107,7 +107,7 @@ Results:
 Document sweep:
 
 - Updated `README.md`, `docs/configuration.md`, and `docs/operations.md` with
-  the `uv run docker-health-alerts config-check --config ...` command.
+  the `uv run docker-monitor config-check --config ...` command.
 - Checked `docs/requirements.md`, `docs/architecture.md`, `docs/security.md`,
   `docs/testing.md`, and `docs/plugin_contract.md`; no behavior changes were
   needed beyond the config validation command.
@@ -115,7 +115,7 @@ Document sweep:
 
 Maintainability sweep:
 
-- Configuration parsing is isolated in `docker_health_alerts/config.py`.
+- Configuration parsing is isolated in `docker_monitor/config.py`.
 - Plugin-name validation uses a small provider-neutral registry constant without
   importing plugin modules.
 - Secret file validation verifies readability without reading or logging secret

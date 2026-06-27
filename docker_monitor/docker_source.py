@@ -8,7 +8,7 @@ from typing import Any
 import docker  # type: ignore[import-untyped]
 from docker.errors import NotFound  # type: ignore[import-untyped]
 
-from docker_health_alerts.alerts import ContainerSnapshot, HealthLogSnapshot
+from docker_monitor.alerts import ContainerSnapshot, HealthLogSnapshot
 
 DOCKER_EVENT_FILTERS = {"type": "container", "event": "health_status"}
 

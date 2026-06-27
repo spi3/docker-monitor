@@ -1,10 +1,10 @@
-Docker Health Alert Monitor
+DockerMonitor
 ===========================
 
 Vision
 ------
 
-Docker Health Alert Monitor is a small containerized service that watches
+DockerMonitor is a small containerized service that watches
 Docker container health transitions and sends alerts through modular receiver
 plugins. It is meant to be simple to run beside existing Docker or Docker
 Compose workloads, especially in GitOps-managed home lab and small operations

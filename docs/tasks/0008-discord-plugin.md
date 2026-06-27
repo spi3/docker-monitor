@@ -67,4 +67,60 @@ All criteria in `docs/task_acceptance_criteria.md` apply.
 Completion Evidence
 -------------------
 
-Completion evidence is recorded here when the task moves to `done`.
+Completed after Task 0007.
+
+Implemented artifacts:
+
+- `docker_monitor/receivers/discord.py` with optional plugin loading via
+  the shared registry, `webhook_url`/`webhook_url_file`,
+  `WEBHOOK_URL`/`WEBHOOK_URL_FILE`, Discord-friendly payload formatting, and
+  HTTP delivery classification.
+- Discord payloads for `firing`, `resolved`, and `starting` statuses.
+- Retryable classification for network failures, HTTP 429, and HTTP 5xx.
+- Permanent classification for other HTTP 4xx responses.
+- `tests/test_discord.py` covering webhook file newline stripping, firing,
+  resolved, starting, HTTP posting, retryable failures, permanent failures, and
+  webhook URL redaction in failure messages.
+- Updated registry missing-plugin tests now that Discord exists.
+
+Commands run:
+
+```sh
+uv --cache-dir .uv-cache run pytest
+uv --cache-dir .uv-cache run pytest -m e2e
+uv --cache-dir .uv-cache run ruff check .
+uv --cache-dir .uv-cache run ruff format --check .
+uv --cache-dir .uv-cache run mypy .
+uv --cache-dir .uv-cache build
+```
+
+Results:
+
+- Unit/component test gate passed: 94 tests passed.
+- End-to-end gate passed: 2 selected tests passed.
+- Ruff lint passed.
+- Ruff formatting check passed.
+- Mypy strict type check passed.
+- Package build produced source distribution and wheel.
+- The first sandboxed build attempt failed due blocked network access for the
+  isolated build backend; rerunning the same `uv build` with approved network
+  access passed.
+
+Document sweep:
+
+- Updated `docs/plugin_contract.md` with Discord 429/5xx retryable behavior and
+  other 4xx permanent behavior.
+- Checked `docs/configuration.md`, `docs/security.md`, `docs/testing.md`, and
+  `docs/requirements.md`; no additional updates were needed.
+- Updated `docs/task_tracker.md` status.
+
+Maintainability sweep:
+
+- Discord-specific formatting is isolated in `receivers/discord.py`.
+- The plugin does not inspect Docker SDK objects or alter routing/state logic.
+- Webhook URLs are never included in delivery result messages.
+- Tests use `httpx.MockTransport` and require no real Discord credentials.
+
+Residual risk:
+
+- Runtime loop integration happens in Task 0009.

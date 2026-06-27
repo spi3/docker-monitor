@@ -10,7 +10,7 @@ import pytest
 @pytest.mark.e2e
 def test_healthcheck_command_returns_ok() -> None:
     result = subprocess.run(
-        [sys.executable, "-m", "docker_health_alerts", "healthcheck"],
+        [sys.executable, "-m", "docker_monitor", "healthcheck"],
         check=False,
         capture_output=True,
         text=True,

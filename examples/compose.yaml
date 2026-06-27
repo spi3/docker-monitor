@@ -1,0 +1,31 @@
+services:
+  docker-monitor:
+    image: docker-monitor:local
+    build:
+      context: ..
+      target: runtime
+    container_name: docker-monitor
+    restart: unless-stopped
+    environment:
+      CONFIG_FILE: /config/config.yaml
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./config.yaml:/config/config.yaml:ro
+      - ./secrets:/run/secrets:ro
+    healthcheck:
+      test: ["CMD", "uv", "run", "--no-dev", "docker-monitor", "healthcheck"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  example-monitored:
+    image: alpine:3.22
+    command: ["sh", "-c", "sleep infinity"]
+    labels:
+      docker-monitor.enable: "true"
+    healthcheck:
+      test: ["CMD", "true"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

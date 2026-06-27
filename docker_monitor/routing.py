@@ -3,8 +3,8 @@ from __future__ import annotations
 from collections.abc import Callable, Mapping
 from typing import Any
 
-from docker_health_alerts.alerts import Alert
-from docker_health_alerts.config import RouteConfig
+from docker_monitor.alerts import Alert
+from docker_monitor.config import RouteConfig
 
 LogEvent = Callable[[dict[str, Any]], None]
 

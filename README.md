@@ -1,6 +1,6 @@
-# Docker Health Alert Monitor
+# DockerMonitor
 
-Docker Health Alert Monitor watches Docker container health transitions and
+DockerMonitor watches Docker container health transitions and
 routes normalized alerts to configured receiver plugins.
 
 The implementation is tracked through `docs/task_tracker.md`. Contributor
@@ -19,5 +19,13 @@ uv run mypy .
 Validate a config file with:
 
 ```sh
-uv run docker-health-alerts config-check --config /config/config.yaml
+uv run docker-monitor config-check --config /config/config.yaml
 ```
+
+Run the monitor with:
+
+```sh
+uv run docker-monitor run --config /config/config.yaml
+```
+
+Release and CI behavior is documented in `docs/release.md`.

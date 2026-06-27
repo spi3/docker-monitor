@@ -1,4 +1,4 @@
-Docker Health Alert Monitor Requirements
+DockerMonitor Requirements
 =======================================
 
 Status: initial implementation requirements
@@ -79,7 +79,7 @@ Default settings:
 ```yaml
 monitor:
   mode: label_opt_in
-  label: docker-health-alert.enable
+  label: docker-monitor.enable
 ```
 
 Mode behavior:
@@ -188,7 +188,7 @@ host: serenity
 
 monitor:
   mode: label_opt_in
-  label: docker-health-alert.enable
+  label: docker-monitor.enable
   send_resolved: true
   send_starting: false
   health_log_output_limit: 1000

@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from docker_health_alerts.config import RouteConfig
-from docker_health_alerts.routing import get_alert_field, route_alert, route_matches
+from docker_monitor.config import RouteConfig
+from docker_monitor.routing import get_alert_field, route_alert, route_matches
 
 
 def alert_payload() -> dict[str, Any]:

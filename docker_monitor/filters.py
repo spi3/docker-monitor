@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from docker_health_alerts.alerts import ContainerSnapshot, normalize_container_name
-from docker_health_alerts.config import MonitorConfig
+from docker_monitor.alerts import ContainerSnapshot, normalize_container_name
+from docker_monitor.config import MonitorConfig
 
 COMPOSE_PROJECT_LABEL = "com.docker.compose.project"
 COMPOSE_SERVICE_LABEL = "com.docker.compose.service"

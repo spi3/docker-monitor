@@ -4,7 +4,7 @@ from datetime import UTC, datetime
 
 import pytest
 
-from docker_health_alerts.alerts import (
+from docker_monitor.alerts import (
     REDACTED_VALUE,
     AlertStatus,
     ContainerSnapshot,
@@ -26,7 +26,7 @@ def test_build_alert_populates_normalized_schema() -> None:
         state="running",
         health="unhealthy",
         labels={
-            "docker-health-alert.enable": "true",
+            "docker-monitor.enable": "true",
             "com.docker.compose.project": "gt",
             "com.docker.compose.service": "qbittorrent",
             "com.example.api_token": "secret-token",
@@ -63,7 +63,7 @@ def test_build_alert_populates_normalized_schema() -> None:
             "service": "qbittorrent",
         },
         "labels": {
-            "docker-health-alert.enable": "true",
+            "docker-monitor.enable": "true",
             "com.docker.compose.project": "gt",
             "com.docker.compose.service": "qbittorrent",
             "com.example.api_token": REDACTED_VALUE,

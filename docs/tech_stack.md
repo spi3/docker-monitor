@@ -1,4 +1,4 @@
-Docker Health Alert Monitor Tech Stack
+DockerMonitor Tech Stack
 =====================================
 
 Status: proposed initial stack
@@ -33,8 +33,8 @@ Plugin Loading
 Initial plugins can live in a local package namespace, for example:
 
 ```text
-docker_health_alerts.receivers.generic_webhook
-docker_health_alerts.receivers.discord
+docker_monitor.receivers.generic_webhook
+docker_monitor.receivers.discord
 ```
 
 The plugin registry should map configured plugin names to import paths. A plugin
@@ -115,6 +115,7 @@ The image should:
 - Read configuration from `/config/config.yaml` by default.
 - Expose no public port unless an HTTP health endpoint is implemented.
 - Include a healthcheck command.
+- Provide a Dockerfile `test` target for containerized end-to-end validation.
 
 Docker Runtime
 --------------
@@ -159,6 +160,7 @@ Use:
 - `ruff` for linting and import sorting.
 - `mypy` or pyright-compatible type hints where practical.
 - `pytest` for test execution.
+- GitHub Actions for pull request gates and GHCR image publishing.
 
 The implementation should keep the core event engine testable without a live
 Docker daemon by isolating Docker API calls behind a small source adapter.
@@ -169,7 +171,7 @@ Project Layout
 Recommended initial layout:
 
 ```text
-docker_health_alerts/
+docker_monitor/
   __init__.py
   __main__.py
   alerts.py

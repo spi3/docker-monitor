@@ -4,15 +4,15 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Protocol
 
-from docker_health_alerts.alerts import (
+from docker_monitor.alerts import (
     Alert,
     AlertStatus,
     ContainerSnapshot,
     build_alert,
 )
-from docker_health_alerts.config import AppConfig
-from docker_health_alerts.filters import should_monitor_container
-from docker_health_alerts.state import HealthStateTracker
+from docker_monitor.config import AppConfig
+from docker_monitor.filters import should_monitor_container
+from docker_monitor.state import HealthStateTracker
 
 
 class ContainerSource(Protocol):
