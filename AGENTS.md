@@ -8,8 +8,8 @@ definitions. Core docs live in `docs/*.md`. Implementation tasks are tracked in
 
 Main layout:
 
-- `docker_monitor/`: Python service package.
-- `docker_monitor/receivers/`: optional receiver plugins.
+- `src/docker_monitor/`: Python service package.
+- `src/docker_monitor/receivers/`: optional receiver plugins.
 - `tests/`: unit, component, and end-to-end tests.
 
 Keep Docker event logic, routing, and provider-specific receiver code separated

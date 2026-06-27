@@ -73,10 +73,10 @@ Completed after Task 0004.
 Implemented artifacts:
 
 - Runtime dependency `docker` installed and locked through `uv`.
-- `docker_monitor/docker_source.py` with a narrow Docker SDK adapter,
+- `src/docker_monitor/docker_source.py` with a narrow Docker SDK adapter,
   container inspection snapshots, healthcheck detection, health log extraction,
   Docker event filters, and health event parsing.
-- `docker_monitor/reconciliation.py` with startup reconciliation over a
+- `src/docker_monitor/reconciliation.py` with startup reconciliation over a
   source protocol.
 - `ContainerSnapshot.has_healthcheck` field for core filtering of containers
   without Docker healthchecks.
@@ -120,7 +120,7 @@ Document sweep:
 
 Maintainability sweep:
 
-- Docker SDK objects are isolated in `docker_monitor/docker_source.py`.
+- Docker SDK objects are isolated in `src/docker_monitor/docker_source.py`.
 - Startup reconciliation depends on a source protocol and is tested with fakes.
 - Provider-specific delivery code was not introduced.
 - The default test suite does not require Docker daemon access.

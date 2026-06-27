@@ -71,11 +71,11 @@ Completed after Task 0005.
 
 Implemented artifacts:
 
-- `docker_monitor/plugins.py` with provider-neutral `DeliveryResult`,
+- `src/docker_monitor/plugins.py` with provider-neutral `DeliveryResult`,
   delivery statuses, and receiver protocol.
-- `docker_monitor/routing.py` with exact top-level and nested alert field
+- `src/docker_monitor/routing.py` with exact top-level and nested alert field
   route matching, receiver de-duplication, and unmatched-route structured logs.
-- `docker_monitor/delivery.py` with receiver dispatch, bounded retries,
+- `src/docker_monitor/delivery.py` with receiver dispatch, bounded retries,
   permanent failure handling, exception classification, fatal receiver behavior,
   and structured secret-safe delivery logs.
 - `tests/test_routing.py` covering exact severity/status-style matching, nested

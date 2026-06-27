@@ -71,7 +71,7 @@ Completed after Task 0007.
 
 Implemented artifacts:
 
-- `docker_monitor/receivers/discord.py` with optional plugin loading via
+- `src/docker_monitor/receivers/discord.py` with optional plugin loading via
   the shared registry, `webhook_url`/`webhook_url_file`,
   `WEBHOOK_URL`/`WEBHOOK_URL_FILE`, Discord-friendly payload formatting, and
   HTTP delivery classification.

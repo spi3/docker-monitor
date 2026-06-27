@@ -171,7 +171,7 @@ Project Layout
 Recommended initial layout:
 
 ```text
-docker_monitor/
+src/docker_monitor/
   __init__.py
   __main__.py
   alerts.py

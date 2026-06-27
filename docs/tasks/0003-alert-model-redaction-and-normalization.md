@@ -71,7 +71,7 @@ Completed after Task 0002.
 
 Implemented artifacts:
 
-- `docker_monitor/alerts.py` with normalized alert schema version `1`.
+- `src/docker_monitor/alerts.py` with normalized alert schema version `1`.
 - `ContainerSnapshot` and `HealthLogSnapshot` inputs that keep Docker SDK
   objects outside the provider-facing alert boundary.
 - Alert status mapping for `unhealthy`, `healthy`, and `starting`.
@@ -111,7 +111,7 @@ Document sweep:
 
 Maintainability sweep:
 
-- Alert normalization is isolated in `docker_monitor/alerts.py`.
+- Alert normalization is isolated in `src/docker_monitor/alerts.py`.
 - Provider-facing output is a pydantic model/dictionary, not Docker SDK data.
 - Redaction and truncation helpers are small, deterministic, and directly
   tested.

@@ -69,10 +69,10 @@ Completed after Task 0006.
 
 Implemented artifacts:
 
-- `docker_monitor/secrets.py` with shared secret-file reading that strips
+- `src/docker_monitor/secrets.py` with shared secret-file reading that strips
   one trailing newline.
-- `docker_monitor/plugins.py` plugin registry and receiver loading.
-- `docker_monitor/receivers/generic_webhook.py` with `httpx` POST
+- `src/docker_monitor/plugins.py` plugin registry and receiver loading.
+- `src/docker_monitor/receivers/generic_webhook.py` with `httpx` POST
   delivery, `url`/`url_file`, `WEBHOOK_URL`/`WEBHOOK_URL_FILE`, static headers,
   `header_files`, default normalized-alert JSON payloads, JSON
   `payload_template` rendering, and retry classification.
@@ -113,8 +113,8 @@ Document sweep:
 
 Maintainability sweep:
 
-- Receiver loading is centralized in `docker_monitor/plugins.py`.
-- Secret file reading is shared through `docker_monitor/secrets.py`.
+- Receiver loading is centralized in `src/docker_monitor/plugins.py`.
+- Secret file reading is shared through `src/docker_monitor/secrets.py`.
 - The generic webhook plugin does not import or inspect Docker SDK objects.
 - Delivery results and error messages avoid webhook URLs and secret header
   values.

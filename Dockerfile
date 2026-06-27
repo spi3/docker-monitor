@@ -10,7 +10,7 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 WORKDIR /app
 
 COPY pyproject.toml uv.lock README.md ./
-COPY docker_monitor ./docker_monitor
+COPY src ./src
 
 FROM base AS test
 

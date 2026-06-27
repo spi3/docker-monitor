@@ -22,6 +22,15 @@ dependencies = [
 [project.scripts]
 docker-monitor = "docker_monitor.cli:main"
 
+[tool.hatch.build.targets.sdist]
+include = [
+  "/src",
+  "/README.md",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/docker_monitor"]
+
 [dependency-groups]
 dev = [
   "mypy>=1.14",

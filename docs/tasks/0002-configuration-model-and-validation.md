@@ -70,10 +70,10 @@ Completed after Task 0001.
 
 Implemented artifacts:
 
-- `docker_monitor/config.py` with YAML loading, defaults, pydantic models,
+- `src/docker_monitor/config.py` with YAML loading, defaults, pydantic models,
   duration parsing, receiver validation, route validation, known plugin
   validation, and secret file reference validation.
-- `docker_monitor/cli.py` `config-check` command.
+- `src/docker_monitor/cli.py` `config-check` command.
 - `tests/test_config.py` for defaults, invalid monitor modes, duplicate
   receivers, route references, plugin names, duration parsing, environment
   config path loading, and secret file validation.
@@ -115,7 +115,7 @@ Document sweep:
 
 Maintainability sweep:
 
-- Configuration parsing is isolated in `docker_monitor/config.py`.
+- Configuration parsing is isolated in `src/docker_monitor/config.py`.
 - Plugin-name validation uses a small provider-neutral registry constant without
   importing plugin modules.
 - Secret file validation verifies readability without reading or logging secret

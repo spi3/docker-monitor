@@ -74,12 +74,12 @@ Completed after Task 0008.
 
 Implemented artifacts:
 
-- `docker_monitor/structured_logging.py` JSON logger for stdout records.
-- `docker_monitor/runtime.py` service runtime with startup
+- `src/docker_monitor/structured_logging.py` JSON logger for stdout records.
+- `src/docker_monitor/runtime.py` service runtime with startup
   reconciliation, alert routing/delivery, live Docker health event processing,
   reconnect after stream disconnects, reconciliation after reconnect, shutdown
   request handling, and signal handler installation.
-- `docker_monitor/cli.py` `run --config` integration using the runtime.
+- `src/docker_monitor/cli.py` `run --config` integration using the runtime.
 - Existing `healthcheck` command retained and tested.
 - `tests/test_runtime.py` covering startup reconciliation before streaming,
   live event alert delivery, stream reconnects, reconnect-limit failure,
