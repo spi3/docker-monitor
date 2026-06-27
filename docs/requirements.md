@@ -9,7 +9,8 @@ Purpose
 Build a small containerized service that watches Docker container health
 transitions and sends alerts through modular receiver plugins. Provider-specific
 integrations must live outside the core event engine and must only be loaded
-when referenced in configuration.
+when referenced in configuration. Built-in receiver aliases and externally
+importable receiver modules must use the same provider-neutral plugin contract.
 
 Core Responsibilities
 ---------------------

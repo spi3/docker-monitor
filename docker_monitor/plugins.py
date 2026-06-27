@@ -5,7 +5,7 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Any, Literal, Protocol, cast
 
-from docker_monitor.config import ReceiverConfig
+from docker_monitor.config import ReceiverConfig, is_plugin_reference
 
 DeliveryStatus = Literal["success", "retryable_failure", "permanent_failure"]
 PLUGIN_MODULES = {
@@ -72,8 +72,10 @@ def load_receivers(
 
 def import_receiver_factory(plugin_name: str) -> ReceiverFactory:
     module_name = PLUGIN_MODULES.get(plugin_name)
-    if module_name is None:
+    if module_name is None and not is_plugin_reference(plugin_name):
         raise PluginLoadError(f"unknown receiver plugin {plugin_name!r}")
+    if module_name is None:
+        module_name = plugin_name
 
     try:
         module = importlib.import_module(module_name)

@@ -6,6 +6,8 @@ services:
       target: runtime
     container_name: docker-monitor
     restart: unless-stopped
+    group_add:
+      - "${DOCKER_SOCKET_GID:-0}"
     environment:
       CONFIG_FILE: /config/config.yaml
     volumes:
@@ -13,7 +15,8 @@ services:
       - ./config.yaml:/config/config.yaml:ro
       - ./secrets:/run/secrets:ro
     healthcheck:
-      test: ["CMD", "uv", "run", "--no-dev", "docker-monitor", "healthcheck"]
+      test:
+        ["CMD", "uv", "run", "--no-sync", "--no-dev", "docker-monitor", "healthcheck"]
       interval: 30s
       timeout: 5s
       retries: 3

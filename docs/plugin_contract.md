@@ -20,9 +20,11 @@ Initial names:
 - `generic-webhook`
 - `discord`
 
-Configured names are mapped to import paths by the plugin registry. A plugin
-module must only be imported when at least one configured receiver references
-that plugin.
+Built-in configured names are mapped to import paths by the plugin registry.
+External plugins may also be referenced by dotted Python module path, such as
+`e2e_plugins.drop_receiver`, when that module is available on `PYTHONPATH`.
+A plugin module must only be imported when at least one configured receiver
+references that plugin.
 
 Receiver Instance
 -----------------
@@ -276,7 +278,8 @@ To add a future receiver:
 
 1. Create a module under the receiver plugin namespace.
 2. Implement the receiver plugin interface.
-3. Add the configured plugin name and import path to the plugin registry.
+3. Reference the plugin by dotted module path, or add a short built-in alias and
+   import path to the plugin registry.
 4. Add plugin-specific configuration validation.
 5. Add tests for config validation, payload formatting, delivery
    classification, and secret redaction.

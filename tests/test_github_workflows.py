@@ -14,7 +14,7 @@ def test_ci_workflow_runs_required_uv_and_container_gates() -> None:
 
     for command in [
         "uv sync --locked --python 3.12",
-        "uv run pytest",
+        'uv run pytest -m "not docker"',
         "uv run pytest -m e2e",
         "uv run ruff check .",
         "uv run ruff format --check .",
@@ -30,6 +30,9 @@ def test_ci_workflow_runs_required_uv_and_container_gates() -> None:
 
     parsed = yaml.safe_load(text)
     assert parsed["permissions"] == {"contents": "read"}
+    steps = parsed["jobs"]["checks"]["steps"]
+    e2e_step = next(step for step in steps if step["name"] == "Run end-to-end tests")
+    assert e2e_step["env"] == {"DOCKER_MONITOR_RUN_DIND_E2E": "1"}
 
 
 def test_publish_workflow_publishes_ghcr_with_expected_tags_and_permissions() -> None:

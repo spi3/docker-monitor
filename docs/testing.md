@@ -18,6 +18,7 @@ Use three test layers:
 1. Unit tests for pure logic.
 2. Component tests with fake Docker sources and fake receivers.
 3. Optional integration tests against Docker and HTTP endpoints.
+4. Docker-in-Docker end-to-end tests for the full container runtime.
 
 The default test suite should not require Docker daemon access or real receiver
 credentials.
@@ -52,7 +53,8 @@ Configuration tests should verify:
 - `send_starting` defaults to `false`.
 - Duplicate receiver names are rejected.
 - Routes referencing unknown receivers are rejected.
-- Unknown plugins are rejected with clear messages.
+- Unknown plugin aliases are rejected with clear messages.
+- Dotted external plugin module paths are accepted and loaded only when used.
 - Invalid durations are rejected.
 - Secret file config is validated during receiver initialization.
 
@@ -129,6 +131,7 @@ Plugin registry tests should verify:
 - Missing configured plugins fail startup clearly.
 - Multiple receiver instances can use the same plugin.
 - Plugin initialization receives only plugin-specific config.
+- External plugin module paths are loaded through the same receiver contract.
 
 Generic webhook tests should verify:
 
@@ -192,6 +195,27 @@ Suggested marker:
 ```sh
 uv run pytest -m docker
 ```
+
+Full Docker-in-Docker end-to-end validation starts a privileged `docker:dind`
+container, loads the DockerMonitor runtime image into the nested daemon, starts
+DockerMonitor inside that daemon, and runs monitored test containers with real
+Docker healthchecks.
+
+The DinD test mounts a test-only receiver plugin into the DockerMonitor
+container. The plugin drops delivery and emits JSON log records with
+`event=mock_receiver.alert_received`. The test drives an unhealthy startup
+container plus a flapping container and asserts that `firing` and `resolved`
+alerts are logged.
+
+Run the privileged DinD e2e locally with:
+
+```sh
+DOCKER_MONITOR_RUN_DIND_E2E=1 uv run pytest -m "e2e and docker"
+```
+
+CI enables `DOCKER_MONITOR_RUN_DIND_E2E=1` for the end-to-end test step. The
+general unit/component step runs `uv run pytest -m "not docker"` so it does not
+launch privileged containers.
 
 Containerized validation for the end-to-end CLI checks uses the Dockerfile test
 target:

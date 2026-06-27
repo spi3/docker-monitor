@@ -37,6 +37,7 @@ Docker Run Example
 ```sh
 docker run -d \
   --name docker-monitor \
+  --group-add "$(stat -c '%g' /var/run/docker.sock)" \
   -v /var/run/docker.sock:/var/run/docker.sock:ro \
   -v ./config:/config:ro \
   -v ./secrets:/run/secrets:ro \
@@ -53,6 +54,8 @@ services:
     image: docker-monitor:latest
     container_name: docker-monitor
     restart: unless-stopped
+    group_add:
+      - "${DOCKER_SOCKET_GID:-0}"
     environment:
       CONFIG_FILE: /config/config.yaml
     volumes:
@@ -60,7 +63,8 @@ services:
       - ./config:/config:ro
       - ./secrets:/run/secrets:ro
     healthcheck:
-      test: ["CMD", "docker-monitor", "healthcheck"]
+      test:
+        ["CMD", "uv", "run", "--no-sync", "--no-dev", "docker-monitor", "healthcheck"]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -69,6 +73,8 @@ services:
 
 A complete Compose example is available at `examples/compose.yaml`, with a
 matching config file at `examples/config.yaml`.
+Set `DOCKER_SOCKET_GID=$(stat -c '%g' /var/run/docker.sock)` before using the
+Compose example on systems where the socket is not group-readable by GID `0`.
 
 Example Monitored Service
 -------------------------
@@ -151,7 +157,7 @@ The container should provide a healthcheck command.
 Recommended command shape:
 
 ```sh
-uv run --no-dev docker-monitor healthcheck
+uv run --no-sync --no-dev docker-monitor healthcheck
 ```
 
 The command should return:

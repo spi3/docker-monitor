@@ -14,6 +14,7 @@ CONFIG_FILE_ENV = "CONFIG_FILE"
 DEFAULT_CONFIG_FILE = "/config/config.yaml"
 DEFAULT_MONITOR_LABEL = "docker-monitor.enable"
 KNOWN_PLUGIN_NAMES = frozenset({"discord", "generic-webhook"})
+_PLUGIN_MODULE_PATH_RE = re.compile(r"^[A-Za-z_]\w*(?:\.[A-Za-z_]\w*)+$")
 
 DurationInput = str | int | float
 MonitorMode = Literal["label_opt_in", "label_opt_out"]
@@ -77,9 +78,12 @@ class ReceiverConfig(BaseModel):
 
     @model_validator(mode="after")
     def validate_receiver(self) -> Self:
-        if self.plugin not in KNOWN_PLUGIN_NAMES:
+        if not is_plugin_reference(self.plugin):
             known = ", ".join(sorted(KNOWN_PLUGIN_NAMES))
-            raise ValueError(f"unknown plugin {self.plugin!r}; known plugins: {known}")
+            raise ValueError(
+                f"unknown plugin {self.plugin!r}; known plugins: {known}; "
+                "external plugins must be dotted Python module paths",
+            )
         self.config = normalize_receiver_config(self.name, self.config)
         return self
 
@@ -154,6 +158,12 @@ def parse_duration(value: DurationInput) -> float:
     if seconds <= 0:
         raise ValueError("duration must be greater than zero")
     return seconds
+
+
+def is_plugin_reference(plugin: str) -> bool:
+    return plugin in KNOWN_PLUGIN_NAMES or bool(
+        _PLUGIN_MODULE_PATH_RE.fullmatch(plugin)
+    )
 
 
 def normalize_receiver_config(

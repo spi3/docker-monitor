@@ -141,6 +141,26 @@ receivers:
         load_config_file(config_file)
 
 
+def test_external_plugin_module_path_is_allowed(tmp_path: Path) -> None:
+    config_file = write_config(
+        tmp_path,
+        """
+receivers:
+  - name: e2e-drop
+    plugin: tests.e2e.plugins.e2e_plugins.drop_receiver
+routes:
+  - match:
+      severity: warning
+    receivers:
+      - e2e-drop
+""",
+    )
+
+    config = load_config_file(config_file)
+
+    assert config.receivers[0].plugin == "tests.e2e.plugins.e2e_plugins.drop_receiver"
+
+
 def test_unknown_route_receiver_fails(tmp_path: Path) -> None:
     config_file = write_config(
         tmp_path,

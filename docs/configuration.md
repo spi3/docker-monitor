@@ -163,7 +163,9 @@ receivers:
 Receiver fields:
 
 - `name`: Unique receiver name referenced by routes.
-- `plugin`: Plugin identifier, such as `discord` or `generic-webhook`.
+- `plugin`: Built-in plugin identifier, such as `discord` or
+  `generic-webhook`, or a dotted Python module path for an external receiver
+  available on `PYTHONPATH`.
 - `config`: Plugin-specific configuration object.
 - `fatal`: Optional boolean. If true, final delivery failure may stop the
   service. Defaults to `false`.

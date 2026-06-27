@@ -13,6 +13,7 @@ Build and run the image locally:
 ```sh
 docker build --target runtime -t docker-monitor:local .
 docker run --rm \
+  --group-add "$(stat -c '%g' /var/run/docker.sock)" \
   -v /var/run/docker.sock:/var/run/docker.sock:ro \
   -v "$PWD/examples/config.yaml:/config/config.yaml:ro" \
   -v "$PWD/examples/secrets:/run/secrets:ro" \

@@ -32,9 +32,11 @@ jobs:
         run: uv sync --locked --python 3.12
 
       - name: Run unit and component tests
-        run: uv run pytest
+        run: uv run pytest -m "not docker"
 
       - name: Run end-to-end tests
+        env:
+          DOCKER_MONITOR_RUN_DIND_E2E: "1"
         run: uv run pytest -m e2e
 
       - name: Run lint

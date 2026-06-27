@@ -29,8 +29,8 @@ USER appuser
 
 ENV CONFIG_FILE=/config/config.yaml
 
-ENTRYPOINT ["uv", "run", "--no-dev", "docker-monitor"]
+ENTRYPOINT ["uv", "run", "--no-sync", "--no-dev", "docker-monitor"]
 CMD ["run", "--config", "/config/config.yaml"]
 
 HEALTHCHECK --interval=30s --timeout=5s --retries=3 --start-period=10s \
-  CMD ["uv", "run", "--no-dev", "docker-monitor", "healthcheck"]
+  CMD ["uv", "run", "--no-sync", "--no-dev", "docker-monitor", "healthcheck"]

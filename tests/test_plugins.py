@@ -98,6 +98,38 @@ def test_load_receivers_imports_each_configured_plugin_once(
     assert imported_modules == ["docker_monitor.receivers.generic_webhook"]
 
 
+def test_load_receivers_imports_external_plugin_module(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    imported_modules: list[str] = []
+    fake_module = types.ModuleType("external_drop_receiver")
+
+    def create_receiver(name: str, config: Mapping[str, Any]) -> Receiver:
+        return FakeReceiver(name)
+
+    fake_module.create_receiver = create_receiver  # type: ignore[attr-defined]
+
+    def fake_import_module(module_name: str) -> types.ModuleType:
+        imported_modules.append(module_name)
+        return fake_module
+
+    monkeypatch.setattr(
+        "docker_monitor.plugins.importlib.import_module", fake_import_module
+    )
+
+    receivers = load_receivers(
+        [
+            ReceiverConfig(
+                name="drop",
+                plugin="tests.e2e.plugins.e2e_plugins.drop_receiver",
+            ),
+        ],
+    )
+
+    assert list(receivers) == ["drop"]
+    assert imported_modules == ["tests.e2e.plugins.e2e_plugins.drop_receiver"]
+
+
 def test_missing_configured_plugin_fails_clearly(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -111,3 +143,14 @@ def test_missing_configured_plugin_fails_clearly(
         PluginLoadError, match="configured receiver plugin 'missing-plugin' is missing"
     ):
         import_receiver_factory("missing-plugin")
+
+
+def test_missing_external_plugin_module_fails_clearly() -> None:
+    with pytest.raises(
+        PluginLoadError,
+        match=(
+            "configured receiver plugin "
+            "'tests.e2e.plugins.e2e_plugins.missing' is missing"
+        ),
+    ):
+        import_receiver_factory("tests.e2e.plugins.e2e_plugins.missing")
