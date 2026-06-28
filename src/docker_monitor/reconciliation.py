@@ -22,6 +22,7 @@ class ContainerSource(Protocol):
 @dataclass(frozen=True)
 class StartupReconciliationResult:
     inspected: int = 0
+    ignored_not_running: int = 0
     monitored: int = 0
     ignored_without_healthcheck: int = 0
     ignored_unmonitored: int = 0
@@ -36,6 +37,7 @@ def reconcile_startup(
     event_time: datetime | None = None,
 ) -> StartupReconciliationResult:
     inspected = 0
+    ignored_not_running = 0
     monitored = 0
     ignored_without_healthcheck = 0
     ignored_unmonitored = 0
@@ -43,6 +45,10 @@ def reconcile_startup(
 
     for container in source.list_containers():
         inspected += 1
+
+        if not is_running_container(container):
+            ignored_not_running += 1
+            continue
 
         if not container.has_healthcheck:
             ignored_without_healthcheck += 1
@@ -76,11 +82,16 @@ def reconcile_startup(
 
     return StartupReconciliationResult(
         inspected=inspected,
+        ignored_not_running=ignored_not_running,
         monitored=monitored,
         ignored_without_healthcheck=ignored_without_healthcheck,
         ignored_unmonitored=ignored_unmonitored,
         alerts=alerts,
     )
+
+
+def is_running_container(container: ContainerSnapshot) -> bool:
+    return container.state.strip().lower() == "running"
 
 
 def startup_alert_status(

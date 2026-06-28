@@ -21,6 +21,7 @@ def container(
     *,
     id: str = "container-id",
     name: str = "qbittorrent",
+    state: str = "running",
     health: str = "healthy",
     labels: dict[str, str] | None = None,
     has_healthcheck: bool = True,
@@ -30,7 +31,7 @@ def container(
         id=id,
         name=name,
         image="lscr.io/linuxserver/qbittorrent:latest",
-        state="running",
+        state=state,
         health=health,
         labels=labels if labels is not None else {"docker-monitor.enable": "true"},
         health_log=health_log,
@@ -77,6 +78,25 @@ def test_reconcile_startup_emits_firing_for_existing_unhealthy_container() -> No
     assert alert["compose"] == {"project": "gt", "service": "qbittorrent"}
     assert alert["labels"]["ApiToken"] == "[redacted]"
     assert alert["health_log"] == {"exit_code": 1, "output": "failur"}
+
+
+def test_reconcile_startup_ignores_exited_unhealthy_container() -> None:
+    tracker = HealthStateTracker()
+    config = AppConfig(host="serenity", monitor=MonitorConfig(mode="label_opt_in"))
+
+    result = reconcile_startup(
+        FakeSource(
+            [container(id="stale-id", state="exited", health="unhealthy")],
+        ),
+        config,
+        tracker,
+    )
+
+    assert result.inspected == 1
+    assert result.ignored_not_running == 1
+    assert result.monitored == 0
+    assert result.alerts == []
+    assert tracker.current_health("stale-id") is None
 
 
 def test_reconcile_startup_initializes_healthy_without_alert() -> None:

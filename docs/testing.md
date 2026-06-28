@@ -93,6 +93,7 @@ Startup Reconciliation Tests
 
 Startup reconciliation tests should use fake containers and verify:
 
+- Non-running containers are ignored.
 - Containers without healthchecks are ignored.
 - Unmonitored containers are ignored.
 - Existing unhealthy monitored containers emit startup `firing` alerts.

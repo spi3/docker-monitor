@@ -71,13 +71,14 @@ Startup Reconciliation Flow
 
 For each existing container:
 
-1. Ignore containers without a Docker healthcheck.
-2. Apply monitor filters.
-3. Read current health state.
-4. Record current state by container ID.
-5. Emit a startup `firing` alert if the current health is `unhealthy`.
-6. Emit a startup `starting` alert only when `send_starting` is enabled.
-7. Do not alert for healthy containers unless a future config option explicitly
+1. Ignore containers that are not running.
+2. Ignore containers without a Docker healthcheck.
+3. Apply monitor filters.
+4. Read current health state.
+5. Record current state by container ID.
+6. Emit a startup `firing` alert if the current health is `unhealthy`.
+7. Emit a startup `starting` alert only when `send_starting` is enabled.
+8. Do not alert for healthy containers unless a future config option explicitly
    enables that behavior.
 
 This prevents already unhealthy containers from being missed when the service
@@ -98,17 +99,18 @@ For each live health event:
 1. Extract the container ID and reported health status.
 2. Inspect or retrieve container metadata needed for filtering and alert
    normalization.
-3. Ignore containers without healthchecks.
-4. Apply monitor filters.
-5. Ask the state tracker whether the health value changed.
-6. Suppress the event if the health value is unchanged.
-7. Convert the health transition into an alert status:
+3. Ignore containers that are not running.
+4. Ignore containers without healthchecks.
+5. Apply monitor filters.
+6. Ask the state tracker whether the health value changed.
+7. Suppress the event if the health value is unchanged.
+8. Convert the health transition into an alert status:
    - `unhealthy` -> `firing`
    - `healthy` -> `resolved` when `send_resolved` is enabled
    - `starting` -> `starting` when `send_starting` is enabled
-8. Build the normalized alert object.
-9. Route the alert to matching receivers.
-10. Deliver through receiver plugins with retry handling.
+9. Build the normalized alert object.
+10. Route the alert to matching receivers.
+11. Deliver through receiver plugins with retry handling.
 
 State Model
 -----------

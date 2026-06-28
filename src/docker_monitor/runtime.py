@@ -12,7 +12,11 @@ from docker_monitor.delivery import DeliveryCoordinator, FatalDeliveryError
 from docker_monitor.docker_source import DockerHealthEvent, DockerSource
 from docker_monitor.filters import should_monitor_container
 from docker_monitor.plugins import Receiver, load_receivers
-from docker_monitor.reconciliation import ContainerSource, reconcile_startup
+from docker_monitor.reconciliation import (
+    ContainerSource,
+    is_running_container,
+    reconcile_startup,
+)
 from docker_monitor.routing import route_alert
 from docker_monitor.state import HealthStateTracker, record_health_observation
 from docker_monitor.structured_logging import JsonLogger
@@ -114,6 +118,7 @@ class ServiceRuntime:
         self.logger.info(
             "startup.reconciled",
             inspected=result.inspected,
+            ignored_not_running=result.ignored_not_running,
             monitored=result.monitored,
             ignored_without_healthcheck=result.ignored_without_healthcheck,
             ignored_unmonitored=result.ignored_unmonitored,
@@ -133,6 +138,13 @@ class ServiceRuntime:
         if container is None:
             self.logger.info(
                 "docker.container_missing", container_id=event.container_id
+            )
+            return
+        if not is_running_container(container):
+            self.logger.debug(
+                "docker.container_not_running",
+                container_id=container.id,
+                state=container.state,
             )
             return
         if not container.has_healthcheck:

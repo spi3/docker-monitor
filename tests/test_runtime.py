@@ -62,6 +62,7 @@ class FakeReceiver:
 def container(
     *,
     id: str = "container-id",
+    state: str = "running",
     health: str = "healthy",
     has_healthcheck: bool = True,
     labels: dict[str, str] | None = None,
@@ -70,7 +71,7 @@ def container(
         id=id,
         name="qbittorrent",
         image="lscr.io/linuxserver/qbittorrent:latest",
-        state="running",
+        state=state,
         health=health,
         labels=labels if labels is not None else {"docker-monitor.enable": "true"},
         has_healthcheck=has_healthcheck,
@@ -153,6 +154,22 @@ def test_live_event_transition_routes_alert_after_startup_state_init() -> None:
     assert len(receiver.alerts) == 1
     assert receiver.alerts[0]["status"] == "firing"
     assert receiver.alerts[0]["container"]["previous_health"] == "healthy"
+
+
+def test_live_event_for_stopped_container_is_ignored() -> None:
+    receiver = FakeReceiver()
+    source = FakeSource(
+        containers_by_cycle=[[container(id="abc123", health="healthy")]],
+        events_by_cycle=[[event("abc123", "unhealthy")]],
+        inspected={
+            "abc123": container(id="abc123", state="exited", health="unhealthy")
+        },
+    )
+
+    exit_code = runtime(source, receiver).run(max_reconnects=0)
+
+    assert exit_code == 0
+    assert receiver.alerts == []
 
 
 def test_stream_disconnect_reconnects_and_reconciles_again() -> None:

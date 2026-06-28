@@ -57,6 +57,7 @@ Startup Reconciliation
 On startup, before consuming live events, the service must:
 
 - Inspect existing containers.
+- Ignore containers that are not running.
 - Ignore containers without healthchecks.
 - Apply the configured monitor filters.
 - Initialize state for monitored containers.
